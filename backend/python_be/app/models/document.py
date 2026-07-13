@@ -15,4 +15,4 @@ class Document(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     document_type = Column(Enum(DocumentType), nullable=False)
-    document_url = Column(String, nullable=False)
+    document_url = Column(String, unique=True, nullable=False)
