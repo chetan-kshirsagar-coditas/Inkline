@@ -18,6 +18,17 @@ class Setting(BaseSettings):
     ADMIN_LAST_NAME: str
 
 
+    SECRET_KEY: str
+    ALGORITHM: str
+    EXPIRATION_DURATION: int
+
+
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    REGION: str
+    SES_SENDER_MAIL: str
+
+
     @property
     def DB_URL(self):
         return f"postgresql+psycopg2://{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
