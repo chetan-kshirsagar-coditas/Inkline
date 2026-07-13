@@ -5,6 +5,8 @@ from app.auth.login_schema import SignupSchema, RequestOTP
 from app.auth.login_service import LoginService
 from app.utils.role_checker import RoleChecker
 from app.models.user import User
+from app.utils.otp_service import OTPService
+
 
 router = APIRouter("/auth", prefix=["auth"])
 
@@ -13,5 +15,5 @@ def register(new_user: SignupSchema, db: Session = Depends(database.get_db), use
     return LoginService.create_new_user(new_user.email, new_user.first_name, new_user.last_name, new_user.role, db)
 
 @router.post("/request_otp")
-def request_otp(email: RequestOTP, db: Session = Depends(database.get_db)):
-    return 
+def request_otp(data: RequestOTP, db: Session = Depends(database.get_db)):
+    return OTPService.request_otp(data.email, db)
