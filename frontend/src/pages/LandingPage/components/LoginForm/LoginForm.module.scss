@@ -1,0 +1,14 @@
+.LoginForm {
+    background-image: linear-gradient(rgba(255, 255, 255, 0.001), rgba(255, 255, 255, 0.001)), url(../../../../assets/generalBG.svg);
+    background-position: center;
+    padding: 2rem;
+    border: thin solid #ccc;
+
+    .formButtonGrp {
+        display: flex;
+
+        button {
+            width: 100%;
+        }
+    }
+}

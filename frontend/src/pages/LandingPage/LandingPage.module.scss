@@ -1,0 +1,35 @@
+.LandingPage {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-image: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)), url(../../assets/hero_BG.svg);
+    background-position: center;
+
+    .heroPage {
+        flex-grow: 1;
+        display: flex;
+        padding: 1rem;
+        gap: 1rem;
+
+        .common {
+            width: 50%;
+            padding: 1rem;
+        }
+
+        .leftSection {
+            @extend .common;
+
+            img {
+                width: 100%;
+            }
+        }
+
+        .rightSection {
+            @extend .common;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+        }
+    }
+}

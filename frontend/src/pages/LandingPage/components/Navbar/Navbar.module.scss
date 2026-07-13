@@ -1,0 +1,23 @@
+.header{
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: thin solid #ccc;
+    background-color: white;
+
+    .name{
+        cursor: pointer;
+        font-size: 1.25em;
+        font-weight: 500;
+    }
+
+    .navLinks{
+        display: flex;
+        gap: 3rem;
+
+        .navLink{
+            text-decoration: none;
+            color: black;
+        }
+    }
+}
