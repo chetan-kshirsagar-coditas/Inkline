@@ -18,6 +18,10 @@ class Setting(BaseSettings):
     ADMIN_LAST_NAME: str
 
 
+    SECRET_KEY: str
+    ALGORITHM: str
+    EXPIRATION_DURATION: int
+
     @property
     def DB_URL(self):
         return f"postgresql+psycopg2://{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
