@@ -27,8 +27,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "recommendations")
-public class Recommendations {
+@Table(name = "ai_recommendations")
+public class AiRecommendations {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private Long id;
