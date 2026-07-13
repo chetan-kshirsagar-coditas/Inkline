@@ -19,6 +19,6 @@ class User(Base):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     role = Column(Enum(Role), nullable=False)
-    profile_picture_url = Column(String, nullable=True)
+    profile_picture_url = Column(String, ForeignKey("documents.id"), nullable=True)
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=func.now())
