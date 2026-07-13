@@ -1,7 +1,13 @@
+import type { PropsWithChildren } from "react"
+import "./App.scss";
+import SnackbarContainer from "./components/Snackbar/SnackbarContainer";
 
-const App = () => {
+const App = ({ children }: PropsWithChildren) => {
   return (
-    <div>Inkline</div>
+    <div className="App">
+      <SnackbarContainer />
+      {children}
+    </div>
   )
 }
 
