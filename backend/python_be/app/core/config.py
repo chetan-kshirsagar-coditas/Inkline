@@ -1,5 +1,7 @@
 from pydantic_settings import BaseSettings
 from pydantic import EmailStr
+import uuid
+
 
 class Setting(BaseSettings):
 
@@ -10,6 +12,7 @@ class Setting(BaseSettings):
     DB_NAME: str
 
     
+    ADMIN_ID: uuid.UUID
     ADMIN_EMAIL: EmailStr
     ADMIN_FIRST_NAME: str
     ADMIN_LAST_NAME: str
