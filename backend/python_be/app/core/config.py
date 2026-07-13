@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings
+from pydantic import EmailStr
 
 class Setting(BaseSettings):
 
@@ -7,7 +8,13 @@ class Setting(BaseSettings):
     DB_HOST: str
     DB_PORT: str
     DB_NAME: str
+
     
+    ADMIN_EMAIL: EmailStr
+    ADMIN_FIRST_NAME: str
+    ADMIN_LAST_NAME: str
+
+
     @property
     def DB_URL(self):
         return f"postgresql+psycopg2://{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
