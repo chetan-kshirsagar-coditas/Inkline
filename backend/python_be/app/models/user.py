@@ -22,3 +22,4 @@ class User(Base):
     profile_picture_url = Column(String, ForeignKey("documents.id"), nullable=True)
     created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, server_default=func.now())
