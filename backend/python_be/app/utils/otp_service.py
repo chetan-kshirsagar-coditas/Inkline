@@ -6,7 +6,7 @@ from app.utils.email_service import EmailService
 from app.user.user_repository import UserRepository
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
-
+from app.utils.jwt_helper import JWTHelper
 
 password_context = CryptContext(schemes="bcrypt", deprecated="auto")
 
@@ -16,6 +16,9 @@ class OTPService:
     @staticmethod
     def request_otp(email: str, db: Session):
         otp = random.randint(100000, 999999)
+
+        print(otp)
+
         otp_hash = password_context.hash(str(otp))
         
         existing_user = UserRepository.get_user_by_email(email, db)
@@ -57,3 +60,34 @@ class OTPService:
                     "message": "OTP Sent Successfully"
                 }
             )
+    
+    @staticmethod
+    def verify_otp(email: str, otp: int | str, db: Session):
+        fetched_otp_hash = RedisClient.client().get('email')
+        if not fetched_otp_hash:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"OTP Expired"
+            )
+        is_valid_otp = password_context.verify(str(otp), fetched_otp_hash)
+        
+        if not is_valid_otp:
+            raise HTTPException(
+                status_code = status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid OTP entered."
+            )
+        
+        user = UserRepository.get_user_by_email(email, db)
+
+        user_details = {
+            "email": user.email,
+            "role": user.role
+        }
+
+        return JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content = {
+                "access_token": JWTHelper.encode_token(user_details)
+            }
+        )
+    

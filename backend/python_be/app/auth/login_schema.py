@@ -9,3 +9,7 @@ class SignupSchema(BaseModel):
     
 class RequestOTP(BaseModel):
     email: EmailStr = Field(...)
+
+class VerifyOTP(BaseModel):
+    email: EmailStr = Field(...)
+    otp: int = Field(...)

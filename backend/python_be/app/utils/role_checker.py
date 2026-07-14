@@ -16,6 +16,7 @@ class RoleChecker:
     def get_current_user(token: str = Depends(OAuth2Scheme), db: Session = Depends(database.get_db)):
         payload = JWTHelper.decode_token(token)
         email = payload.get("email", None)
+        print(payload)
         if not email:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,

@@ -29,9 +29,8 @@ class Setting(BaseSettings):
     SES_SENDER_MAIL: str
 
 
-    @property
-    def DB_URL(self):
-        return f"postgresql+psycopg2://{self.DB_USERNAME}:{self.DB_PASSWORD}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+    
+    DB_URL: str
     
     model_config={
         'env_file': ".env"

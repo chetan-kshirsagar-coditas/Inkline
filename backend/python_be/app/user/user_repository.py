@@ -19,5 +19,5 @@ class UserRepository:
         except Exception as e:
             raise HTTPException(
                 status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Database Error Occured while creating new user"
+                detail=f"Database Error Occured while creating new user. more details: {e}"
             )
