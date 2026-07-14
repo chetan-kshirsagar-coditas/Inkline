@@ -8,8 +8,12 @@ import FormInput from "../../../../components/Form/FormInput/FormInput";
 import FormSelect from "../../../../components/Form/FormSelect/FormSelect";
 import Button from "../../../../components/Button/Button";
 import FormFileInput from "../../../../components/Form/FormFileInput/FormFileInput";
+import { useAddContentMutation } from "../../../../redux/slices/contentApiSlice";
+import { snack } from "../../../../components/Snackbar/hooks/useSnackbarStore";
 
 const AddContent = ({ onClose }: AddContentProps) => {
+
+    const [ addContent, { isLoading } ] = useAddContentMutation();
 
     const methods = useForm<AddContentData>({ defaultValues: { 
         title: "",
@@ -18,8 +22,13 @@ const AddContent = ({ onClose }: AddContentProps) => {
         file: undefined
      }, resolver: zodResolver(ZAddContent) });
 
-     const onSubmit = (data: AddContentData) => {
-        alert(JSON.stringify(data));
+     const onSubmit = async (data: AddContentData) => {
+        try{
+            await addContent(data).unwrap();
+            snack.success("Added successfully");
+        }catch(e: any){
+            snack.error("Something went wrong !");
+        }
      }
     return (
         <Modal closeModal={onClose}>
@@ -54,7 +63,7 @@ const AddContent = ({ onClose }: AddContentProps) => {
                 />
 
                 <div>
-                    <Button>Add</Button>
+                    <Button disabled={isLoading}>{isLoading ? "Adding..." : "Add"}</Button>
                 </div>
             </Form>
         </Modal>
