@@ -24,4 +24,5 @@ public interface ContentRepository extends JpaRepository<Content, UUID> {
     public Optional<Page<Content>> findAllByContentAndSubmissionStatus(ContentStatus contentStatus, Pageable pageable);
 
 
+    Optional<Page<Content>> findAllByContentStatus(ContentStatus contentStatus, Pageable pageable);
 }

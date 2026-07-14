@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -66,8 +67,9 @@ public class EditorService {
     public String approveDraft(UUID draftId) {
         Drafts requestedDraft = draftService.getDraftById(draftId);
         requestedDraft.getContent().setContentStatus(ContentStatus.APPROVED);
+        requestedDraft.getContent().setPublishedAt(LocalDateTime.now());
         draftService.saveDraft(requestedDraft);
-        log.info("Changed the status of the requested Draft to APPROVED.");
+        log.info("Changed the status of the requested Draft to APPROVED. And updated the publishedAt date of the content.");
 
         mailService.sendMail(commonService.getCurrentUser().getEmail(), requestedDraft.getContent().getAuthor().getEmail(), "Content Approved", "Your content of ID: " + requestedDraft.getContent().getId() + " is approved.");
         log.info("Mail is sent to the author regarding approval of submitted content-draft.");

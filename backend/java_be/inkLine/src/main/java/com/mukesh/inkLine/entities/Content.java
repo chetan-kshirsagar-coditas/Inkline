@@ -55,8 +55,11 @@ public class Content {
     @JoinColumn(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
-    @JoinColumn(name = "submitted_at")
+    @Column(name = "submitted_at")
     private LocalDateTime submittedAt;
+
+    @Column(name = "published_at")
+    private LocalDateTime publishedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "content_status", nullable = false)

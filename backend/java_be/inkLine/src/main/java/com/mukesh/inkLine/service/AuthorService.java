@@ -7,9 +7,11 @@ import com.mukesh.inkLine.dto.response.StartNewContentResponseDTO;
 import com.mukesh.inkLine.entities.Attachments;
 import com.mukesh.inkLine.entities.Categories;
 import com.mukesh.inkLine.entities.Content;
+import com.mukesh.inkLine.entities.Documents;
 import com.mukesh.inkLine.entities.Drafts;
 import com.mukesh.inkLine.entities.Users;
 import com.mukesh.inkLine.enums.ContentStatus;
+import com.mukesh.inkLine.enums.DocumentType;
 import com.mukesh.inkLine.enums.Roles;
 import com.mukesh.inkLine.exceptions.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +21,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -35,6 +39,7 @@ public class AuthorService {
     private final CategoriesService categoriesService;
     private final S3Service s3Service;
     private final AttachmentService attachmentService;
+    private final DocumentsService documentsService;
 
     public StartNewContentResponseDTO startNewContent(StartNewContentRequestDTO request, MultipartFile file) {
         Users currentUser = commonService.getCurrentUser();
@@ -106,6 +111,7 @@ public class AuthorService {
         List<GetContentsResponseDTO> response = new ArrayList<>();
         for(Content content : contentPage.getContent()) {
             GetContentsResponseDTO details = GetContentsResponseDTO.builder()
+                    .id(content.getId())
                     .title(content.getTitle())
                     .body(content.getBody())
                     .submittedAt(content.getSubmittedAt().toString())
@@ -139,15 +145,44 @@ public class AuthorService {
         Content content = contentService.getContentById(contentId);
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
         String key = "content/" + content.getId() + "/attachments/" + fileName;
-        return s3Service.uploadFile(file, key);
+        String response =  s3Service.uploadFile(file, key);
+
+        Attachments newAttachment = Attachments.builder().attachmentPath(key).content(content).build();
+        attachmentService.saveAttachment(newAttachment);
+        log.info("A new attachment for the content of ID: {} is added.", contentId);
+
+        Documents newDocument = Documents.builder().documentType(DocumentType.ATTACHMENT).documentUrl(key).build();
+        documentsService.saveDocument(newDocument);
+        log.info("A new record for the attachment is created in the documents-entity.");
+
+        return response;
+    }
+
+    public String uploadCoverImage(UUID contentId, MultipartFile file) {
+        Content content = contentService.getContentById(contentId);
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String key = "content/" + content.getId() + "/attachments/" + fileName;
+        String response = s3Service.uploadFile(file, key);
+
+        Attachments newAttachment = Attachments.builder().content(content).attachmentPath(key).build();
+        attachmentService.saveAttachment(newAttachment);
+        log.info("A new attachment is created as Cover-Pic of the content of ID: {}", contentId);
+
+        Documents documents = Documents.builder().documentUrl(key).documentType(DocumentType.COVER_PIC).build();
+        documentsService.saveDocument(documents);
+        log.info("A new document entry is created for the cover-pic of the requested content.");
+        return response;
     }
 
     public String submitDraft(UUID draftId) {
         Drafts requestedDraft = draftService.getRequestedDraft(commonService.getCurrentUser(), draftId);
         requestedDraft.setSubmitted(true);
         requestedDraft.getContent().setContentStatus(ContentStatus.UNDER_AI_REVIEW);
+        requestedDraft.getContent().setSubmittedAt(LocalDateTime.now());
         draftService.saveDraft(requestedDraft);
-        log.info("Submitted the requested draft for AI review. The content status is changed to: {}", requestedDraft.getContent().getContentStatus().name());
+
+        log.info("Submitted the requested draft for AI review. The content status is changed to: {} and marked the submittedAt time.", requestedDraft.getContent().getContentStatus().name());
+
         return "Submitted the draft successfully";
     }
 

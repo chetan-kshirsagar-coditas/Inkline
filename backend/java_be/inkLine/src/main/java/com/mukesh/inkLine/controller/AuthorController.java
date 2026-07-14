@@ -85,12 +85,24 @@ public class AuthorController {
     @PostMapping("/add/attachment/{contentId}")
     public ResponseEntity<ApiResponse<String>> uploadAttachment(
             @PathVariable @NotNull UUID contentId,
-            @RequestParam(required = false, name = "file", defaultValue = "null") MultipartFile file
+            @RequestParam(name = "file") @NotNull MultipartFile file
     ) {
         return ApiResponse.success(
                 HttpStatus.OK,
                 "File upload is successful.",
                 authorService.uploadAttachment(contentId, file)
+        );
+    }
+
+    @PostMapping("/upload/cover-image/{contentId}")
+    public ResponseEntity<ApiResponse<String>> uploadCoverImage(
+            @PathVariable @NotNull UUID contentId,
+            @RequestParam(name = "file") @NotNull MultipartFile file
+    ) {
+        return ApiResponse.success(
+                HttpStatus.OK,
+                "Cover Image uploaded successfully",
+                authorService.uploadCoverImage(contentId, file)
         );
     }
 
