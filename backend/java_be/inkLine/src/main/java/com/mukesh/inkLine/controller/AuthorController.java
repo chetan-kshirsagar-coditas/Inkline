@@ -87,4 +87,14 @@ public class AuthorController {
                 authorService.submitDraft(draftId)
         );
     }
+
+    @GetMapping("/content/{contentId}/status")
+    public ResponseEntity<ApiResponse<String>> getContentStatus(@PathVariable @NotNull UUID contentId) {
+        return ApiResponse.success(
+                HttpStatus.OK,
+                "Retrieved the status of the requested content",
+                authorService.getContentStatus(contentId)
+        );
+    }
+
 }

@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface DraftsRepository extends JpaRepository<Drafts, Long> {
+public interface DraftsRepository extends JpaRepository<Drafts, UUID> {
     boolean existsByContent(Content content);
 
     Drafts findByContent(Content content);

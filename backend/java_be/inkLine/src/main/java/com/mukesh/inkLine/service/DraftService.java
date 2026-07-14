@@ -43,4 +43,9 @@ public class DraftService {
     public void saveDraft(Drafts draft) {
         draftsRepository.save(draft);
     }
+
+    public Drafts getDraftById(UUID draftId) {
+        return draftsRepository.findById(draftId)
+                .orElseThrow(() -> new NotFoundException("Draft with specified ID is not found."));
+    }
 }

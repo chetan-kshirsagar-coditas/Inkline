@@ -3,6 +3,7 @@ package com.mukesh.inkLine.service;
 import com.mukesh.inkLine.dto.request.StartNewContentRequestDTO;
 import com.mukesh.inkLine.dto.response.GetDraftsResponseDTO;
 import com.mukesh.inkLine.dto.response.StartNewContentResponseDTO;
+import com.mukesh.inkLine.entities.Attachments;
 import com.mukesh.inkLine.entities.Categories;
 import com.mukesh.inkLine.entities.Content;
 import com.mukesh.inkLine.entities.Drafts;
@@ -31,6 +32,7 @@ public class AuthorService {
     private final DraftService draftService;
     private final CategoriesService categoriesService;
     private final S3Service s3Service;
+    private final AttachmentService attachmentService;
 
     public StartNewContentResponseDTO startNewContent(StartNewContentRequestDTO request, MultipartFile file) {
         Users currentUser = commonService.getCurrentUser();
@@ -57,6 +59,14 @@ public class AuthorService {
         String key = "content/" + newContent.getId() + "/attachments/" + fileName;
         log.info(s3Service.uploadFile(file, key));
 
+        Attachments newAttachment = Attachments.builder()
+                .attachmentPath(key)
+                .content(newContent)
+                .isPublic(true)
+                .build();
+        attachmentService.saveAttachment(newAttachment);
+        log.info("A new entry for the attachment is created successfully.");
+
         Drafts draft = draftService.getDraft(newContent);
         return StartNewContentResponseDTO.builder()
                 .message("A draft of the content is created at: " + draft.getCreatedAt().toString())
@@ -70,6 +80,7 @@ public class AuthorService {
         Sort sort = sortOrder.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         PageRequest pageable = PageRequest.of(page, size, sort);
         Page<Drafts> draftsPage = draftService.getAllDrafts(currentUser, pageable);
+        log.info("Extracted all the drafts related to current user.");
 
         List<GetDraftsResponseDTO> response = new ArrayList<>();
         for(Drafts drafts : draftsPage.getContent()) {
@@ -119,5 +130,10 @@ public class AuthorService {
         draftService.saveDraft(requestedDraft);
         log.info("Submitted the requested draft for AI review. The content status is changed to: {}", requestedDraft.getContent().getContentStatus().name());
         return "Submitted the draft successfully";
+    }
+
+    public String getContentStatus(UUID contentId) {
+        Content requestedContent = contentService.getContentById(contentId);
+        return "The Status of the requested content is: " + requestedContent.getContentStatus().name();
     }
 }
