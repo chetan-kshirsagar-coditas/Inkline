@@ -18,8 +18,10 @@ public interface ContentRepository extends JpaRepository<Content, UUID> {
 
     Optional<Content> findById(UUID id);
 
-    Optional<Page<Content>> findAllByContentStatus(ContentStatus contentStatus, Pageable pageable);
+    Optional<Page<Content>> findAllByAuthor(Pageable pageable, Users author);
 
     @Query("SELECT c FROM Content c INNER JOIN Drafts d ON d.content.id = c.id WHERE d.isSubmitted = true AND c.contentStatus=:contentStatus")
     public Optional<Page<Content>> findAllByContentAndSubmissionStatus(ContentStatus contentStatus, Pageable pageable);
+
+
 }

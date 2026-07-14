@@ -1,6 +1,7 @@
 package com.mukesh.inkLine.service;
 
 import com.mukesh.inkLine.dto.request.StartNewContentRequestDTO;
+import com.mukesh.inkLine.dto.response.GetContentsResponseDTO;
 import com.mukesh.inkLine.dto.response.GetDraftsResponseDTO;
 import com.mukesh.inkLine.dto.response.StartNewContentResponseDTO;
 import com.mukesh.inkLine.entities.Attachments;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,12 +76,8 @@ public class AuthorService {
     }
 
     public List<GetDraftsResponseDTO> getAllDrafts(int page, int size, String sortBy, String sortOrder) {
-        Users currentUser = commonService.getCurrentUser();
-        if(!currentUser.getRole().equals(Roles.AUTHOR)) throw new InvalidRequestException("Current user is not an Author.");
-
-        Sort sort = sortOrder.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        PageRequest pageable = PageRequest.of(page, size, sort);
-        Page<Drafts> draftsPage = draftService.getAllDrafts(currentUser, pageable);
+        PageRequest pageable = checkUser(page, size, sortBy, sortOrder);
+        Page<Drafts> draftsPage = draftService.getAllDrafts(commonService.getCurrentUser(), pageable);
         log.info("Extracted all the drafts related to current user.");
 
         List<GetDraftsResponseDTO> response = new ArrayList<>();
@@ -93,6 +91,27 @@ public class AuthorService {
                     .createdAt(drafts.getCreatedAt().toString())
                     .isSubmitted(drafts.isSubmitted())
                     .category(content.getCategory().getCategoryName())
+                    .build();
+            response.add(details);
+        }
+
+        return response;
+    }
+
+    public List<GetContentsResponseDTO> getAllContentsOfAuthor(int page, int size, String sortBy, String sortOrder) {
+        PageRequest pageable = checkUser(page, size, sortBy, sortOrder);
+        Page<Content> contentPage = contentService.getContentOfCurrentAuthor(pageable, commonService.getCurrentUser());
+        log.info("Retrieved the contents related to the current user.");
+
+        List<GetContentsResponseDTO> response = new ArrayList<>();
+        for(Content content : contentPage.getContent()) {
+            GetContentsResponseDTO details = GetContentsResponseDTO.builder()
+                    .title(content.getTitle())
+                    .body(content.getBody())
+                    .submittedAt(content.getSubmittedAt().toString())
+                    .category(content.getCategory().getCategoryName())
+                    .contentStatus(content.getContentStatus().name())
+                    .createdAt(content.getCreatedAt().toString())
                     .build();
             response.add(details);
         }
@@ -135,5 +154,13 @@ public class AuthorService {
     public String getContentStatus(UUID contentId) {
         Content requestedContent = contentService.getContentById(contentId);
         return "The Status of the requested content is: " + requestedContent.getContentStatus().name();
+    }
+
+    public PageRequest checkUser(int page, int size, String sortBy, String sortOrder) {
+        Users currentUser = commonService.getCurrentUser();
+        if(!currentUser.getRole().equals(Roles.AUTHOR)) throw new InvalidRequestException("Current user is not an Author.");
+
+        Sort sort = sortOrder.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        return PageRequest.of(page, size, sort);
     }
 }
