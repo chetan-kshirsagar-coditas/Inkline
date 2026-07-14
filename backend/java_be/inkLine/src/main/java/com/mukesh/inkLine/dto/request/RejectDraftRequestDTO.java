@@ -2,8 +2,8 @@ package com.mukesh.inkLine.dto.request;
 
 import java.util.UUID;
 
-public record RequestChangesRequestDTO(
+public record RejectDraftRequestDTO(
         UUID draftId,
-        String requestedChanges
+        String reasonOfRejection
 ) {
 }

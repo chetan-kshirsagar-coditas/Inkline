@@ -1,9 +1,12 @@
 package com.mukesh.inkLine.controller;
 
+import com.mukesh.inkLine.dto.request.RejectDraftRequestDTO;
+import com.mukesh.inkLine.dto.request.RequestChangesRequestDTO;
 import com.mukesh.inkLine.dto.response.GetDraftsForEditorReviewResponseDTO;
 import com.mukesh.inkLine.global.ApiResponse;
 import com.mukesh.inkLine.service.EditorService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -11,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -57,14 +61,21 @@ public class EditorController {
         );
     }
 
-    @PatchMapping("/draft/{draftId}/reject")
-    public ResponseEntity<ApiResponse<String>> rejectDraft(@PathVariable @NotNull UUID draftId) {
+    @PatchMapping("/draft/reject")
+    public ResponseEntity<ApiResponse<String>> rejectDraft(@RequestBody @Valid RejectDraftRequestDTO request) {
         return ApiResponse.success(
                 HttpStatus.OK,
                 "Rejected the requested draft",
-                editorService.rejectDraft(draftId)
+                editorService.rejectDraft(request)
         );
     }
 
-
+    @PatchMapping("/draft/request-changes")
+    public ResponseEntity<ApiResponse<String>> requestChangesInDraft(@RequestBody @Valid RequestChangesRequestDTO request) {
+        return ApiResponse.success(
+                HttpStatus.OK,
+                "Requested the author for the changes in the draft.",
+                editorService.requestChangesInDraft(request)
+        );
+    }
 }

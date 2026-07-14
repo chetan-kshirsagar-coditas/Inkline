@@ -1,5 +1,7 @@
 package com.mukesh.inkLine.service;
 
+import com.mukesh.inkLine.dto.request.RejectDraftRequestDTO;
+import com.mukesh.inkLine.dto.request.RequestChangesRequestDTO;
 import com.mukesh.inkLine.dto.response.GetDraftsForEditorReviewResponseDTO;
 import com.mukesh.inkLine.entities.AiRecommendations;
 import com.mukesh.inkLine.entities.Content;
@@ -26,6 +28,7 @@ public class EditorService {
     private final ContentService contentService;
     private final AiRecommendationService aiRecommendationService;
     private final DraftService draftService;
+    private final MailService mailService;
 
     public List<GetDraftsForEditorReviewResponseDTO> getDraftsForEditorReview(int page, int size, String sortBy, String sortOrder) {
         if(!commonService.getCurrentUser().getRole().equals(Roles.EDITOR)) throw new InvalidRequestException("This feature is only accessible by the EDITOR.");
@@ -66,15 +69,33 @@ public class EditorService {
         draftService.saveDraft(requestedDraft);
         log.info("Changed the status of the requested Draft to APPROVED.");
 
+        mailService.sendMail(commonService.getCurrentUser().getEmail(), requestedDraft.getContent().getAuthor().getEmail(), "Content Approved", "Your content of ID: " + requestedDraft.getContent().getId() + " is approved.");
+        log.info("Mail is sent to the author regarding approval of submitted content-draft.");
+
         return "Successfully approved the requested Draft";
     }
 
-    public String rejectDraft(UUID draftId) {
-        Drafts requestedDraft = draftService.getDraftById(draftId);
+    public String rejectDraft(RejectDraftRequestDTO request) {
+        Drafts requestedDraft = draftService.getDraftById(request.draftId());
         requestedDraft.getContent().setContentStatus(ContentStatus.REJECTED);
         draftService.saveDraft(requestedDraft);
         log.info("Changed the status of the requested Draft to REJECTED.");
 
+        mailService.sendMail(commonService.getCurrentUser().getEmail(), requestedDraft.getContent().getAuthor().getEmail(), "Content Rejection", "Your content of ID: " + requestedDraft.getContent().getId() + " has been rejected by the Editor.\nReason Of Rejection:\n" + request.reasonOfRejection());
+        log.info("Rejection mail is sent to the Author along with the reason of rejection.");
+
         return "Successfully rejected the requested Draft";
+    }
+
+    public String requestChangesInDraft(RequestChangesRequestDTO request) {
+        Drafts requestedDraft = draftService.getDraftById(request.draftId());
+        requestedDraft.getContent().setContentStatus(ContentStatus.DRAFT);
+        draftService.saveDraft(requestedDraft);
+        log.info("Marked the requested draft's content-status to 'DRAFT'.");
+
+        mailService.sendMail(commonService.getCurrentUser().getEmail(), requestedDraft.getContent().getAuthor().getEmail(), "Requesting changes in the submitted draft", "Changes Requested in your content of ID: " + requestedDraft.getContent().getId() + " are as follows:\n" + request.requestedChanges());
+        log.info("Mail is sent to the author requesting for the suggested changes.");
+
+        return "Successfully marked the content for review and sent mail to the author requesting for suggested changes.";
     }
 }
