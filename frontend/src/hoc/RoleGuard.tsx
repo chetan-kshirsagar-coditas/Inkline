@@ -1,20 +1,18 @@
-import { type PropsWithChildren } from "react";
-import type { ROLE } from "../types/types";
-import { useAppSelector } from "../redux/store/hooks";
+import type { PropsWithChildren } from "react";
 import { Navigate } from "react-router-dom";
+import useCanAccess from "../hooks/useCanAccess";
+import type { ROLE } from "../types/types";
 
 interface RoleGuardProps extends PropsWithChildren {
-    allowed: ROLE[],
-    isRouterGuard?: boolean
+  allowed: ROLE[];
+  isRouterGuard?: boolean;
 }
 
-const RoleGuard = ({allowed, isRouterGuard = false, children}: RoleGuardProps) => {
-    
-  const user = useAppSelector(state => state.auth.user);
-  console.log(user);
-  const isAllowed = allowed.includes(user?.role!);
+export const RoleGuard = ({ allowed, children, isRouterGuard = false }: RoleGuardProps) => {
+  
+  const { isAllowed } = useCanAccess(allowed);
 
-  return isAllowed ? children : isRouterGuard ? <Navigate to={"/unauthorized"}/> : null;
-}
+  return isAllowed ? children : isRouterGuard ? <Navigate to={"/unauthorized"} />: null;
+};
 
-export default RoleGuard
+export default RoleGuard;

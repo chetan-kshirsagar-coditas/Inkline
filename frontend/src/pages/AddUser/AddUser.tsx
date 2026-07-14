@@ -6,23 +6,38 @@ import { ZRegisterData } from "./AddUser.schema";
 import Form from "../../components/Form/Form";
 import FormInput from "../../components/Form/FormInput/FormInput";
 import FormSelect from "../../components/Form/FormSelect/FormSelect";
-import { ROLE } from "../../types/types";
+import { ROLE, type Error } from "../../types/types";
 import Button from "../../components/Button/Button";
+import { useRegisterUserMutation } from "../../redux/slices/authApiSlice";
+import { snack } from "../../components/Snackbar/hooks/useSnackbarStore";
+import { RoleOptions } from "./constants/RoleOptions";
 
 const AddUser = () => {
 
-    const methods = useForm<RegisterData>({ defaultValues: {
-        email: "",
-        first_name: "",
-        last_name: ""
-    }, resolver: zodResolver(ZRegisterData) });
+    const [registerUser, { isLoading: registeringUser }] = useRegisterUserMutation();
 
-    const onSubmit = (data: RegisterData) => {
-        alert(JSON.stringify(data));
+    const methods = useForm<RegisterData>({
+        defaultValues: {
+            email: "",
+            first_name: "",
+            last_name: "",
+            role: ROLE.AUTHOR
+        }, resolver: zodResolver(ZRegisterData)
+    });
+
+
+    const onSubmit = async (data: RegisterData) => {
+        try {
+            await registerUser(data).unwrap();
+            snack.success("Registered successfully.")
+        } catch (e: any) {
+            snack.error(e.data.detail ||"Something went wrong !");
+        }
     }
-  return (
-    <div className={styles.addUserPage}>
-        <Form methods={methods} onSubmit={onSubmit}>
+
+    return (
+        <div className={styles.addUserPage}>
+            <Form methods={methods} onSubmit={onSubmit}>
                 <span>Register User</span>
 
                 <FormInput<RegisterData>
@@ -44,28 +59,15 @@ const AddUser = () => {
                     label="Role"
                     defaultOption="Select a role"
                     name="role"
-                    options={[
-                        {
-                            label: ROLE.ADMIN,
-                            value: ROLE.ADMIN,
-                        },
-                        {
-                            label: ROLE.AUTHOR,
-                            value: ROLE.AUTHOR,
-                        },
-                        {
-                            label: ROLE.EDITOR,
-                            value: ROLE.EDITOR,
-                        },
-                    ]}
-                    />
+                    options={RoleOptions}
+                />
 
-                    <div>
-                        <Button>Register</Button>
-                    </div>
-        </Form>
-    </div>
-  )
+                <div>
+                    <Button disabled={registeringUser}>{registeringUser ? "Registering..." : "Register"}</Button>
+                </div>
+            </Form>
+        </div>
+    )
 }
 
 export default AddUser

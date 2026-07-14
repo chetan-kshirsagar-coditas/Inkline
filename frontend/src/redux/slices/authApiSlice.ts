@@ -1,3 +1,4 @@
+import type { RegisterData } from "../../pages/AddUser/AddUser.types";
 import type { LoginFormData } from "../../pages/LandingPage/components/LoginForm/LoginForm.types";
 import type { User } from "../../types/types";
 import type { RequestOTPResponse, VerifyOTPResponse } from "../types";
@@ -23,6 +24,13 @@ const authApiSlice = apiSlice.injectEndpoints({
             query: () => ({
                 url: "auth/me"
             })
+        }),
+        registerUser: builder.mutation<void, RegisterData>({
+            query: ( data ) => ({
+                url: "auth/register",
+                method: "POST",
+                body: data
+            })
         })
     })
 })
@@ -30,5 +38,6 @@ const authApiSlice = apiSlice.injectEndpoints({
 export const {
     useRequestOTPMutation,
     useVerifyOTPMutation,
-    useLazyGetMeQuery
+    useLazyGetMeQuery,
+    useRegisterUserMutation
 } = authApiSlice;
