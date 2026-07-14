@@ -16,3 +16,17 @@ export type VerifyOTPResponse = {
 export type GetContentResponse = {
     data: Content[]
 }
+
+export type Draft = {
+    "id": string,
+    "title": string,
+    "body": string,
+    "category": string,
+    "createdAt": string,
+    "contentStatus": string,
+    "isSubmitted": boolean
+}
+
+export type GetDraftsResponse = {
+    data: Draft[]
+}
