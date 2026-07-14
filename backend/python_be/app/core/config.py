@@ -27,11 +27,15 @@ class Setting(BaseSettings):
     AWS_SECRET_ACCESS_KEY: str
     REGION: str
     SES_SENDER_MAIL: str
-
+    BUCKET_NAME: str
 
     
     DB_URL: str
     
+
+    GEMINI_API_KEY: str
+
+
     model_config={
         'env_file': ".env"
     }
