@@ -10,7 +10,6 @@ class ContentStatus(str, Enum_):
     UNDER_EDITOR_REVIEW= "UNDER_EDITOR_REVIEW"
     CHANGES_REQUESTED= "CHANGES_REQUESTED"
     APPROVED = "APPROVED"
-    PUBLISHED = "PUBLISHED"
 
 
 class Content(Base):
@@ -22,4 +21,5 @@ class Content(Base):
     author = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, default=func.now())
     submitted_at = Column(DateTime, default=None)
+    published_at = Column(DateTime, default=None)
     content_status = Column(Enum(ContentStatus), default="DRAFT")
