@@ -8,10 +8,10 @@ from app.models.user import User
 
 
 
-router = APIRouter(prefix="/user", tags=["users"])
+router = APIRouter(prefix="/profile", tags=["profile"])
 
 @router.patch("/set_profile")
-async def set_profile(profile_data: ProfileCreate, profile_picture: UploadFile, db: Session = Depends(database.get_db), user: User = Depends(RoleChecker.role_checker(["ADMIN", "AUTHOR", "REVIEWER"]))):
+async def set_profile(display_name: str, bio: str, profile_picture: UploadFile, db: Session = Depends(database.get_db), user: User = Depends(RoleChecker.role_checker(["ADMIN", "AUTHOR", "EDITOR"]))):
     if profile_picture.filename.split('.')[-1] not in ["png", "jpg", "jpeg"]:
         raise HTTPException(
             status_code = status.HTTP_400_BAD_REQUEST,
@@ -21,4 +21,4 @@ async def set_profile(profile_data: ProfileCreate, profile_picture: UploadFile, 
     with open(profile_picture.filename, "wb") as f:
             content = await profile_picture.read()
             f.write(content)
-    return UserService.update_profile(profile_data.display_name, profile_data.bio, profile_picture, db)
+    return UserService.update_profile(display_name, bio, profile_picture, db, user)
