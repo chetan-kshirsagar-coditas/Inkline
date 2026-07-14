@@ -8,7 +8,7 @@ from app.models.user import User
 from app.utils.otp_service import OTPService
 
 
-router = APIRouter("/auth", prefix=["auth"])
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register")
 def register(new_user: SignupSchema, db: Session = Depends(database.get_db), user: User = Depends(RoleChecker.role_checker(["ADMIN"]))):

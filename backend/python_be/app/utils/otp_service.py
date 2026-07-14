@@ -16,7 +16,7 @@ class OTPService:
     @staticmethod
     def request_otp(email: str, db: Session):
         otp = random.randint(100000, 999999)
-        otp_hash = password_context.hash(otp)
+        otp_hash = password_context.hash(str(otp))
         
         existing_user = UserRepository.get_user_by_email(email, db)
         if not existing_user:
