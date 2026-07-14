@@ -15,5 +15,6 @@ export default defineConfig({
   },
   define: {
     "process.env.VITE_BACKEND_BASE_URL": JSON.stringify(process.env.VITE_BACKEND_BASE_URL),
+    "process.env.VITE_BACKEND_BASE_URL_JAVA": JSON.stringify(process.env.VITE_BACKEND_BASE_URL_JAVA),
   },
 })

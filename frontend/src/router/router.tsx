@@ -7,6 +7,7 @@ import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout";
 import AddUser from "../pages/AddUser/AddUser";
 import RoleGuard from "../hoc/RoleGuard";
 import { ROLE } from "../types/types";
+import AddCategory from "../pages/AddCategory/AddCategory";
 
 export const router = createBrowserRouter([
     {
@@ -30,7 +31,11 @@ export const router = createBrowserRouter([
                     {
                         path: "adduser",
                         element: <RoleGuard allowed={[ROLE.ADMIN]} isRouterGuard><AddUser /></RoleGuard>
-                    }
+                    },
+                    {
+                        path: "addcategory",
+                        element: <RoleGuard allowed={[ROLE.ADMIN]} isRouterGuard><AddCategory /></RoleGuard>
+                    },
                 ]
             }
         ]
