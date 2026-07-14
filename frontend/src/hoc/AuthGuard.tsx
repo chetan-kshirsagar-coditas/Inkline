@@ -19,17 +19,17 @@ const AuthGuard = () => {
 
         const fetchUser = async () => {
             if (!token || user) return;
+            console.log("survived")
             try {
                 const response = await getMe().unwrap();
                 dispatch(login({ user: response }))
             } catch (e: any) {
                 localStorage.removeItem("access_token");
-                localStorage.removeItem("refresh_token");
                 navigate("/");
             }
         }
         fetchUser();
-    }, [user])
+    }, [user, getMe])
 
     if (!token) {
         return <Navigate to={"/"} />
