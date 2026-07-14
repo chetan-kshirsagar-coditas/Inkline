@@ -16,11 +16,21 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfig {
+    protected static final String[] PUBLIC_URLS = {
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/webjars/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtFilter jwtFilter) {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(http ->
                 http.requestMatchers("/v1/api/author/**").hasRole(Roles.AUTHOR.name())
+                        .requestMatchers("/v1/api/users/**").permitAll()
+                        .requestMatchers(PUBLIC_URLS).permitAll()
         );
         httpSecurity.httpBasic(Customizer.withDefaults());
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

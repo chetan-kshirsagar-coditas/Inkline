@@ -2,10 +2,13 @@ package com.mukesh.inkLine.service;
 
 import com.mukesh.inkLine.entities.Content;
 import com.mukesh.inkLine.entities.Users;
+import com.mukesh.inkLine.exceptions.NotFoundException;
 import com.mukesh.inkLine.repository.ContentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -19,5 +22,10 @@ public class ContentService {
 
     public boolean isContentPresent(Users author, String title) {
         return contentRepository.existsByAuthorAndTitle(author, title);
+    }
+
+    public Content getContentById(UUID contentId) {
+        return contentRepository.findById(contentId)
+                .orElseThrow(() -> new NotFoundException("Content with specified ID does not exist."));
     }
 }

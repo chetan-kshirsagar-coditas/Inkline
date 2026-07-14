@@ -1,19 +1,26 @@
 package com.mukesh.inkLine.service;
 
 import com.mukesh.inkLine.dto.request.StartNewContentRequestDTO;
-import com.mukesh.inkLine.dto.response.GetAllDraftsResponseDTO;
+import com.mukesh.inkLine.dto.response.GetDraftsResponseDTO;
 import com.mukesh.inkLine.dto.response.StartNewContentResponseDTO;
 import com.mukesh.inkLine.entities.Categories;
 import com.mukesh.inkLine.entities.Content;
 import com.mukesh.inkLine.entities.Drafts;
 import com.mukesh.inkLine.entities.Users;
 import com.mukesh.inkLine.enums.ContentStatus;
+import com.mukesh.inkLine.enums.Roles;
 import com.mukesh.inkLine.exceptions.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +30,9 @@ public class AuthorService {
     private final ContentService contentService;
     private final DraftService draftService;
     private final CategoriesService categoriesService;
+    private final S3Service s3Service;
 
-    public StartNewContentResponseDTO startNewContent(StartNewContentRequestDTO request) {
+    public StartNewContentResponseDTO startNewContent(StartNewContentRequestDTO request, MultipartFile file) {
         Users currentUser = commonService.getCurrentUser();
 
         if(contentService.isContentPresent(currentUser, request.title())) throw new InvalidRequestException("A content with the requested title is already present. Please re-verify.");
@@ -45,15 +53,71 @@ public class AuthorService {
         contentService.saveContent(newContent);
         log.info("A new content is created by the author: {} {}", currentUser.getFirstName(), currentUser.getLastName());
 
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String key = "content/" + newContent.getId() + "/attachments/" + fileName;
+        log.info(s3Service.uploadFile(file, key));
+
         Drafts draft = draftService.getDraft(newContent);
         return StartNewContentResponseDTO.builder()
                 .message("A draft of the content is created at: " + draft.getCreatedAt().toString())
                 .build();
     }
 
-    public GetAllDraftsResponseDTO getAllDrafts(int page, int size, String sortBy, String sortOrder) {
+    public List<GetDraftsResponseDTO> getAllDrafts(int page, int size, String sortBy, String sortOrder) {
+        Users currentUser = commonService.getCurrentUser();
+        if(!currentUser.getRole().equals(Roles.AUTHOR)) throw new InvalidRequestException("Current user is not an Author.");
+
         Sort sort = sortOrder.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         PageRequest pageable = PageRequest.of(page, size, sort);
+        Page<Drafts> draftsPage = draftService.getAllDrafts(currentUser, pageable);
 
+        List<GetDraftsResponseDTO> response = new ArrayList<>();
+        for(Drafts drafts : draftsPage.getContent()) {
+            Content content = drafts.getContent();
+            GetDraftsResponseDTO details = GetDraftsResponseDTO.builder()
+                    .id(drafts.getId())
+                    .title(content.getTitle())
+                    .body(content.getBody())
+                    .contentStatus(content.getContentStatus().name())
+                    .createdAt(drafts.getCreatedAt().toString())
+                    .isSubmitted(drafts.isSubmitted())
+                    .category(content.getCategory().getCategoryName())
+                    .build();
+            response.add(details);
+        }
+
+        return response;
+    }
+
+    public GetDraftsResponseDTO getRequestedDraft(UUID id) {
+        Users currentUser = commonService.getCurrentUser();
+        if(!currentUser.getRole().equals(Roles.AUTHOR)) throw new InvalidRequestException("Current is not an Author.");
+
+        Drafts requestedDraft = draftService.getRequestedDraft(currentUser, id);
+        return GetDraftsResponseDTO.builder()
+                .id(id)
+                .title(requestedDraft.getContent().getTitle())
+                .body(requestedDraft.getContent().getBody())
+                .category(requestedDraft.getContent().getCategory().getCategoryName())
+                .contentStatus(requestedDraft.getContent().getContentStatus().name())
+                .createdAt(requestedDraft.getCreatedAt().toString())
+                .isSubmitted(requestedDraft.isSubmitted())
+                .build();
+    }
+
+    public String uploadAttachment(UUID contentId, MultipartFile file) {
+        Content content = contentService.getContentById(contentId);
+        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String key = "content/" + content.getId() + "/attachments/" + fileName;
+        return s3Service.uploadFile(file, key);
+    }
+
+    public String submitDraft(UUID draftId) {
+        Drafts requestedDraft = draftService.getRequestedDraft(commonService.getCurrentUser(), draftId);
+        requestedDraft.setSubmitted(true);
+        requestedDraft.getContent().setContentStatus(ContentStatus.UNDER_AI_REVIEW);
+        draftService.saveDraft(requestedDraft);
+        log.info("Submitted the requested draft for AI review. The content status is changed to: {}", requestedDraft.getContent().getContentStatus().name());
+        return "Submitted the draft successfully";
     }
 }
