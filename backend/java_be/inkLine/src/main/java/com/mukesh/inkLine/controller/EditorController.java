@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/api/editor")
+@RequestMapping("/api/v1/editor")
 @RequiredArgsConstructor
 @Tag(name = "Editor related APIs")
 public class EditorController {
@@ -65,4 +65,6 @@ public class EditorController {
                 editorService.rejectDraft(draftId)
         );
     }
+
+
 }

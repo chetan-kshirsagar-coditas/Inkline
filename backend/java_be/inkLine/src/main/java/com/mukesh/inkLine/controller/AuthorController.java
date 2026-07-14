@@ -1,6 +1,7 @@
 package com.mukesh.inkLine.controller;
 
 import com.mukesh.inkLine.dto.request.StartNewContentRequestDTO;
+import com.mukesh.inkLine.dto.response.GetContentsResponseDTO;
 import com.mukesh.inkLine.dto.response.GetDraftsResponseDTO;
 import com.mukesh.inkLine.dto.response.StartNewContentResponseDTO;
 import com.mukesh.inkLine.global.ApiResponse;
@@ -10,6 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,13 +27,13 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/api/author")
+@RequestMapping("/api/v1/author")
 @RequiredArgsConstructor
 @Tag(name = "Author related APIs")
 public class AuthorController {
     private final AuthorService authorService;
 
-    @PostMapping("/start-content")
+    @PostMapping(value = "/start-content", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<StartNewContentResponseDTO>> startNewContent(
             @RequestBody @Valid StartNewContentRequestDTO request,
             @RequestParam(required = false, name = "file", defaultValue = "null") MultipartFile file
@@ -57,12 +59,25 @@ public class AuthorController {
         );
     }
 
+    @GetMapping("/my-content")
+    public ResponseEntity<ApiResponse<List<GetContentsResponseDTO>>> getAllContentsOfAuthor(
+            @RequestParam(required = false, name = "page", defaultValue = "0") int page,
+            @RequestParam(required = false, name = "size", defaultValue = "5") int size,
+            @RequestParam(required = false, name = "sortBy", defaultValue = "id") String sortBy,
+            @RequestParam(required = false, name = "sortOrder", defaultValue = "ASC") String sortOrder
+    ) {
+        return ApiResponse.success(
+                HttpStatus.OK,
+                "Retrieved all the content related to the currentUser",
+                authorService.getAllContentsOfAuthor(page, size, sortBy, sortOrder)
+        );
+    }
 
     @GetMapping("/draft/{draftId}")
     public ResponseEntity<ApiResponse<GetDraftsResponseDTO>> getRequestedDraft(@PathVariable @NotNull UUID draftId) {
         return ApiResponse.success(
                 HttpStatus.OK,
-                "Retreived the details of requested Draft",
+                "Retrieved the details of requested Draft",
                 authorService.getRequestedDraft(draftId)
         );
     }

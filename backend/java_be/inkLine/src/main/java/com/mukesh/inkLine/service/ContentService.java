@@ -36,4 +36,10 @@ public class ContentService {
         return contentRepository.findAllByContentAndSubmissionStatus(ContentStatus.UNDER_EDITOR_REVIEW, pageable)
                 .orElseThrow(() -> new NotFoundException("No content records are found for Editor Review."));
     }
+
+    public Page<Content> getContentOfCurrentAuthor(Pageable pageable, Users author) {
+        return contentRepository.findAllByAuthor(pageable, author)
+                .orElseThrow(() -> new NotFoundException("No content records are found for current user."));
+
+    }
 }

@@ -39,12 +39,6 @@ public class JwtFilter extends OncePerRequestFilter {
                 token = header.substring(7);
                 email = jwtUtil.extractEmail(token);
             }
-            else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                response.setContentType("application/json");
-                response.getWriter().write("Please provide the bearer token to proceed.");
-                return;
-            }
         }
 
         if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {

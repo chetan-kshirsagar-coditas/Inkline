@@ -23,4 +23,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> errorResponse(S3Exception exception) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage(), LocalDateTime.now()));
     }
+
+    @ExceptionHandler(MailSenderException.class)
+    public ResponseEntity<ErrorResponse> errorResponse(MailSenderException exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage(), LocalDateTime.now()));
+    }
 }
