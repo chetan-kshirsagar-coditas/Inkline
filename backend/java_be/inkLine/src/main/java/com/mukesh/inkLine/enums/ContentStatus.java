@@ -6,5 +6,6 @@ public enum ContentStatus {
     UNDER_EDITOR_REVIEW,
     CHANGES_REQUESTED,
     APPROVED,
+    REJECTED,
     PUBLISHED
 }
