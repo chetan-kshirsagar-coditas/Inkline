@@ -19,9 +19,18 @@ class LoginService:
             first_name=first_name,
             last_name=last_name,
             role=role,
+            profile_picture_url=None,
             created_by=current_user.id
         )
-        return UserRepository.create_new_user(new_user, db)
+
+        UserRepository.create_new_user(new_user, db)
+
+        return JSONResponse(
+            status_code=status.HTTP_201_CREATED,
+            content={
+                "message": "User created successfully"
+            }
+        ) 
     
     @staticmethod
     def get_me(user: User):

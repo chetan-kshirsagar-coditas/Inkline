@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Enum, func, DateTime, ForeignKey
+from sqlalchemy import Column, String, Enum, func, DateTime, Text
 from app.core.database import Base
 import uuid
 from sqlalchemy.dialects.postgresql import UUID
@@ -19,7 +19,9 @@ class User(Base):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     role = Column(Enum(Role), nullable=False)
-    profile_picture_url = Column(String, ForeignKey("documents.document_url"), nullable=True)
+    profile_picture_url = Column(String, nullable=True)
     created_by = Column(UUID(as_uuid=True), nullable=False)
     created_at = Column(DateTime, default=func.now())
     updated_at = Column(DateTime, server_default=func.now())
+    display_name= Column(String, nullable=True, default=None)
+    bio = Column(Text, nullable=True, default=None)

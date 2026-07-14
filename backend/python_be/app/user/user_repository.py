@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.models.user import User
 from fastapi import HTTPException, status
+import uuid
 
 
 class UserRepository:
@@ -21,3 +22,18 @@ class UserRepository:
                 status_code = status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Database Error Occured while creating new user. more details: {e}"
             )
+        
+    @staticmethod
+    def update_profile(existing_user: User, display_name: str, bio: str, profile_url: str, db: Session):
+        try:
+            existing_user.bio = bio
+            existing_user.display_name = display_name
+            existing_user.profile_picture_url = profile_url
+            db.commit()
+            db.refresh(existing_user)
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Database error occured while updating user profile. more details: {e}"
+            )
+        
