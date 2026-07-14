@@ -11,7 +11,7 @@ interface RoleGuardProps extends PropsWithChildren {
 const RoleGuard = ({allowed, isRouterGuard = false, children}: RoleGuardProps) => {
     
   const user = useAppSelector(state => state.auth.user);
-  const isAllowed = allowed.includes(user!.role);
+  const isAllowed = allowed.includes(user?.role!);
 
   return isAllowed ? children : isRouterGuard ? <Navigate to={"/unauthorized"}/> : null;
 }
