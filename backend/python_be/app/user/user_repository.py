@@ -2,8 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 from app.models.user import User
 from fastapi import HTTPException, status
-import uuid
-
+from fastapi.responses import JSONResponse
 
 class UserRepository:
 
@@ -26,9 +25,12 @@ class UserRepository:
     @staticmethod
     def update_profile(existing_user: User, display_name: str, bio: str, profile_url: str, db: Session):
         try:
-            existing_user.bio = bio
-            existing_user.display_name = display_name
-            existing_user.profile_picture_url = profile_url
+            if bio != None:
+                existing_user.bio = bio
+            if display_name != None:
+                existing_user.display_name = display_name
+            if profile_url != None:
+                existing_user.profile_picture_url = profile_url
             db.commit()
             db.refresh(existing_user)
         except Exception as e:
