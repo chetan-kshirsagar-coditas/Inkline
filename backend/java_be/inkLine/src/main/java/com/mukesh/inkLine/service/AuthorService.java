@@ -1,6 +1,7 @@
 package com.mukesh.inkLine.service;
 
 import com.mukesh.inkLine.dto.request.StartNewContentRequestDTO;
+import com.mukesh.inkLine.dto.response.GetAllDraftsResponseDTO;
 import com.mukesh.inkLine.dto.response.StartNewContentResponseDTO;
 import com.mukesh.inkLine.entities.Categories;
 import com.mukesh.inkLine.entities.Content;
@@ -10,6 +11,8 @@ import com.mukesh.inkLine.enums.ContentStatus;
 import com.mukesh.inkLine.exceptions.InvalidRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,5 +49,11 @@ public class AuthorService {
         return StartNewContentResponseDTO.builder()
                 .message("A draft of the content is created at: " + draft.getCreatedAt().toString())
                 .build();
+    }
+
+    public GetAllDraftsResponseDTO getAllDrafts(int page, int size, String sortBy, String sortOrder) {
+        Sort sort = sortOrder.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        PageRequest pageable = PageRequest.of(page, size, sort);
+
     }
 }
