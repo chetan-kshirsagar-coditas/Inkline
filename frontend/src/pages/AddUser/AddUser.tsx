@@ -6,7 +6,7 @@ import { ZRegisterData } from "./AddUser.schema";
 import Form from "../../components/Form/Form";
 import FormInput from "../../components/Form/FormInput/FormInput";
 import FormSelect from "../../components/Form/FormSelect/FormSelect";
-import { ROLE, type Error } from "../../types/types";
+import { ROLE } from "../../types/types";
 import Button from "../../components/Button/Button";
 import { useRegisterUserMutation } from "../../redux/slices/authApiSlice";
 import { snack } from "../../components/Snackbar/hooks/useSnackbarStore";
