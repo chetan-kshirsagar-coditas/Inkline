@@ -1,5 +1,6 @@
 package com.mukesh.inkLine.service;
 
+import com.mukesh.inkLine.dto.request.EditDraftRequestDTO;
 import com.mukesh.inkLine.dto.request.StartNewContentRequestDTO;
 import com.mukesh.inkLine.dto.response.GetContentsResponseDTO;
 import com.mukesh.inkLine.dto.response.GetDraftsResponseDTO;
@@ -197,5 +198,23 @@ public class AuthorService {
 
         Sort sort = sortOrder.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         return PageRequest.of(page, size, sort);
+    }
+
+    public String editDraft(EditDraftRequestDTO request) {
+        Drafts requestedDraft = draftService.getDraftById(request.draftId());
+        if(requestedDraft.isSubmitted()) throw new InvalidRequestException("The draft is already submitted. Hence it cannot be edited.");
+
+        Content requestedContent = requestedDraft.getContent();
+        if(request.title() != null) requestedContent.setTitle(request.title());
+        if(request.body() != null) requestedContent.setBody(request.body());
+        if(request.category() != null) {
+            Categories requestedCategory = categoriesService.getCategoryByCategoryName(request.category());
+            if(requestedCategory == null) throw new InvalidRequestException("The specified category does not exist. Please verify and try again.");
+            else requestedContent.setCategory(requestedCategory);
+        }
+        draftService.saveDraft(requestedDraft);
+        log.info("Requested draft is successfully updated.");
+
+        return "The draft with ID: " + requestedDraft.getId() + " is successfully updated.";
     }
 }

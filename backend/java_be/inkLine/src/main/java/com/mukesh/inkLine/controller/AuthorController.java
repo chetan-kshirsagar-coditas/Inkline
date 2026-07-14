@@ -1,5 +1,6 @@
 package com.mukesh.inkLine.controller;
 
+import com.mukesh.inkLine.dto.request.EditDraftRequestDTO;
 import com.mukesh.inkLine.dto.request.StartNewContentRequestDTO;
 import com.mukesh.inkLine.dto.response.GetContentsResponseDTO;
 import com.mukesh.inkLine.dto.response.GetDraftsResponseDTO;
@@ -124,4 +125,12 @@ public class AuthorController {
         );
     }
 
+    @PatchMapping("/edit/draft")
+    public ResponseEntity<ApiResponse<String>> editDraft(@RequestBody @Valid EditDraftRequestDTO request) {
+        return ApiResponse.success(
+                HttpStatus.OK,
+                "Requested draft is successfully edited",
+                authorService.editDraft(request)
+        );
+    }
 }

@@ -92,6 +92,7 @@ public class EditorService {
     public String requestChangesInDraft(RequestChangesRequestDTO request) {
         Drafts requestedDraft = draftService.getDraftById(request.draftId());
         requestedDraft.getContent().setContentStatus(ContentStatus.DRAFT);
+        requestedDraft.setSubmitted(false);
         draftService.saveDraft(requestedDraft);
         log.info("Marked the requested draft's content-status to 'DRAFT'.");
 

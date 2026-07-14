@@ -4,15 +4,18 @@ import com.mukesh.inkLine.dto.response.GetPublishedContentResponseDTO;
 import com.mukesh.inkLine.global.ApiResponse;
 import com.mukesh.inkLine.service.CommonService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/common")
@@ -36,7 +39,7 @@ public class CommonController {
     }
 
     @GetMapping("/published-content")
-    public ResponseEntity<ApiResponse<List<GetPublishedContentResponseDTO>>> getPublishedContent(
+    public ResponseEntity<ApiResponse<List<GetPublishedContentResponseDTO>>> getAllPublishedContent(
             @RequestParam(required = false, name = "page", defaultValue = "0") int page,
             @RequestParam(required = false, name = "size", defaultValue = "5") int size,
             @RequestParam(required = false, name = "sortBy", defaultValue = "id") String sortBy,
@@ -45,7 +48,17 @@ public class CommonController {
         return ApiResponse.success(
                 HttpStatus.OK,
                 "Retrieved all the published content.",
-                commonService.getPublishedContent(page, size, sortBy, sortOrder)
+                commonService.getAllPublishedContent(page, size, sortBy, sortOrder)
         );
     }
+
+    @GetMapping("/published-content/{contentId}")
+    public ResponseEntity<ApiResponse<GetPublishedContentResponseDTO>> getPublishedContent(@PathVariable @NotNull UUID contentId) {
+        return ApiResponse.success(
+                HttpStatus.OK,
+                "Retrieved the details of the requested published content",
+                commonService.getPublishedContent(contentId)
+        );
+    }
+
 }

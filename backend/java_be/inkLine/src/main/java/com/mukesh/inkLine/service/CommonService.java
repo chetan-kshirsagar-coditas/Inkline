@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -51,7 +51,7 @@ public class CommonService {
         return response;
     }
 
-    public List<GetPublishedContentResponseDTO> getPublishedContent(int page, int size, String sortBy, String sortOrder) {
+    public List<GetPublishedContentResponseDTO> getAllPublishedContent(int page, int size, String sortBy, String sortOrder) {
         Sort sort = sortOrder.equalsIgnoreCase("ASC") ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(page, size, sort);
 
@@ -83,6 +83,21 @@ public class CommonService {
             if(document.getDocumentType().equals(DocumentType.COVER_PIC)) return document.getDocumentUrl();
         }
         return null;
+    }
+
+    public GetPublishedContentResponseDTO getPublishedContent(UUID contentId) {
+        Content requestedContent = contentService.getContentById(contentId);
+        List<Attachments> attachmentsList = attachmentService.getAttachments(requestedContent);
+        String coverImage = findCoverImageUrl(attachmentsList);
+        return GetPublishedContentResponseDTO.builder()
+                .title(requestedContent.getTitle())
+                .body(requestedContent.getBody())
+                .category(requestedContent.getCategory().getCategoryName())
+                .authorName(requestedContent.getAuthor().getFirstName() + " " + requestedContent.getAuthor().getLastName())
+                .publishedDate(requestedContent.getPublishedAt().toString())
+                .coverImage(coverImage)
+                .attachments(attachmentsList.stream().map(Attachments::getAttachmentPath).toList())
+                .build();
     }
 
 }
