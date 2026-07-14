@@ -1,16 +1,17 @@
+import type { CategoryData } from "../../pages/AddCategory/AddCategory.types";
 import { apiSliceJAVA } from "./apiSlice";
 
 const categoryApiSlice = apiSliceJAVA.injectEndpoints({
     endpoints: (builder) => ({
-        createCategory: builder.mutation<void, string>({
-            query: (categoryName) => ({
-                url: `/api/v1/admin/create/category/${categoryName}`,
+        createCategory: builder.mutation<void, CategoryData>({
+            query: (data) => ({
+                url: `/api/v1/admin/create/category/${data.categoryName}`,
                 method: "POST"
             })
         })
     })
 })
 
-const {
+export const {
     useCreateCategoryMutation
 } = categoryApiSlice;

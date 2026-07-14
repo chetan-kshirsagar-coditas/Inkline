@@ -18,7 +18,7 @@ export const apiSlice = createApi({
 export const apiSliceJAVA = createApi({
     reducerPath: "java_be",
     baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_BACKEND_BASE_URL2,
+        baseUrl: import.meta.env.VITE_BACKEND_BASE_URL_JAVA,
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("access_token");
             if (token) headers.set("Authorization", `Bearer ${token}`);

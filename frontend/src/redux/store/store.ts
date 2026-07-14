@@ -9,7 +9,7 @@ export const store = configureStore({
         auth: authReducer
     },
     middleware: (getDefaultMiddleware) => 
-        getDefaultMiddleware().concat(apiSlice.middleware)
+        getDefaultMiddleware().concat(apiSlice.middleware).concat(apiSliceJAVA.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>;

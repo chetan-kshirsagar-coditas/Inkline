@@ -24,7 +24,6 @@ const AuthGuard = () => {
             try {
                 const response = await getMe().unwrap();
                 dispatch(login({ user: response }));
-                console.log("Dispatched user details: ", response);
             } catch (e: any) {
                 localStorage.removeItem("access_token");
                 navigate("/");
