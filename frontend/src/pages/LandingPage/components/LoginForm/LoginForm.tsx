@@ -66,7 +66,7 @@ const LoginForm = () => {
                 }
 
                 <div className={styles.formButtonGrp}>
-                    <Button>{isOPTSent ? verifyingOTP ? "Verifying..." : "Verify OTP" : requestingOTP ? "Sending..." : "Send OTP"}</Button>
+                    <Button disabled={ verifyingOTP || requestingOTP }>{isOPTSent ? verifyingOTP ? "Verifying..." : "Verify OTP" : requestingOTP ? "Sending..." : "Send OTP"}</Button>
                 </div>
 
             </Form>

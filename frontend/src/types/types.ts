@@ -12,3 +12,9 @@ export interface User {
     profile_picture_url: string,
     role: ROLE
 }
+
+export interface Error {
+    data : {
+        detail: string
+    }
+}

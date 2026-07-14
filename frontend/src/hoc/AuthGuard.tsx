@@ -18,24 +18,28 @@ const AuthGuard = () => {
     useEffect(() => {
 
         const fetchUser = async () => {
+
             if (!token || user) return;
+
             try {
                 const response = await getMe().unwrap();
-                dispatch(login({ user: response }))
+                dispatch(login({ user: response }));
+                console.log("Dispatched user details: ", response);
             } catch (e: any) {
                 localStorage.removeItem("access_token");
-                localStorage.removeItem("refresh_token");
                 navigate("/");
             }
         }
         fetchUser();
-    }, [user])
+    }, [user, getMe])
 
     if (!token) {
         return <Navigate to={"/"} />
     }
 
-    if(isFetching || isLoading) return <Loader/>
+    if (isLoading || isFetching || (token && !user)) {
+        return <Loader />;
+    }
 
     return <Outlet />
 }
