@@ -1,6 +1,12 @@
 package com.mukesh.inkLine.dto.response;
 
-public record GetAllDraftsResponseDTO(
+import lombok.Builder;
+
+import java.util.UUID;
+
+@Builder
+public record GetDraftsResponseDTO(
+        UUID id,
         String title,
         String body,
         String category,

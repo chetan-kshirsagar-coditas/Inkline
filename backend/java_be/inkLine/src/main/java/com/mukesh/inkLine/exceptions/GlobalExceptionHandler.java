@@ -18,4 +18,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> errorResponse(InvalidRequestException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), exception.getMessage(), LocalDateTime.now()));
     }
+
+    @ExceptionHandler(S3Exception.class)
+    public ResponseEntity<ErrorResponse> errorResponse(S3Exception exception) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), exception.getMessage(), LocalDateTime.now()));
+    }
 }
