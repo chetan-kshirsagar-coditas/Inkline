@@ -42,4 +42,9 @@ public class ContentService {
                 .orElseThrow(() -> new NotFoundException("No content records are found for current user."));
 
     }
+
+    public Page<Content> getPublishedContent(Pageable pageable) {
+        return contentRepository.findAllByContentStatus(ContentStatus.APPROVED, pageable)
+                .orElseThrow(() -> new NotFoundException("There are no published content yet."));
+    }
 }
