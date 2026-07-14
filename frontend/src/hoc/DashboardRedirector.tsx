@@ -16,7 +16,7 @@ const DashboardRedirector = () => {
                 navigate("/adduser");
                 break;
             case ROLE.AUTHOR:
-                navigate("/dashboard");
+                navigate("/content");
                 break;
             case ROLE.EDITOR:
                 navigate("/dashboard");

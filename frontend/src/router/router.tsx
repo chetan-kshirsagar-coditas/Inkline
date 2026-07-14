@@ -8,6 +8,8 @@ import AddUser from "../pages/AddUser/AddUser";
 import RoleGuard from "../hoc/RoleGuard";
 import { ROLE } from "../types/types";
 import AddCategory from "../pages/AddCategory/AddCategory";
+import ContentPage from "../pages/ContentPage/ContentPage";
+import DraftsPage from "../pages/DraftsPage/DraftsPage";
 
 export const router = createBrowserRouter([
     {
@@ -35,6 +37,14 @@ export const router = createBrowserRouter([
                     {
                         path: "addcategory",
                         element: <RoleGuard allowed={[ROLE.ADMIN]} isRouterGuard><AddCategory /></RoleGuard>
+                    },
+                    {
+                        path: "content",
+                        element: <RoleGuard allowed={[ROLE.ADMIN, ROLE.AUTHOR]} isRouterGuard><ContentPage /></RoleGuard>
+                    },
+                    {
+                        path: "drafts",
+                        element: <RoleGuard allowed={[ROLE.ADMIN, ROLE.AUTHOR]} isRouterGuard><DraftsPage /></RoleGuard>
                     },
                 ]
             }
