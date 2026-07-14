@@ -1,8 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import LandingPage from "../pages/LandingPage/LandingPage";
-import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout";
 import UnauthorizedPage from "../pages/UnauthorizedPage/UnauthorizedPage";
 import AuthGuard from "../hoc/AuthGuard";
+import DashboardRedirector from "../hoc/dashboardRedirector";
+import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout";
 
 export const router = createBrowserRouter([
     {
@@ -17,8 +18,11 @@ export const router = createBrowserRouter([
         element: <AuthGuard />,
         children: [
             {
-                path: "/dashboard",
-                element: <DashboardLayout />
+                path: "/dashboardRedirector",
+                element: <DashboardRedirector/>
+            },
+            {
+                element: <DashboardLayout/>,
             }
         ]
     }
