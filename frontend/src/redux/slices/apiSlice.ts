@@ -22,6 +22,7 @@ export const apiSliceJAVA = createApi({
         prepareHeaders: (headers) => {
             const token = localStorage.getItem("access_token");
             if (token) headers.set("Authorization", `Bearer ${token}`);
+            headers.set('ngrok-skip-browser-warning', 'true')
             return headers;
         },
         timeout: 30000

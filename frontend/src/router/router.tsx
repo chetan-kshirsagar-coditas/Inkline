@@ -7,9 +7,10 @@ import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout";
 import AddUser from "../pages/AddUser/AddUser";
 import RoleGuard from "../hoc/RoleGuard";
 import { ROLE } from "../types/types";
-import AddCategory from "../pages/AddCategory/AddCategory";
+import AddCategory from "../pages/CategoryPage/components/AddCategory/AddCategory";
 import ContentPage from "../pages/ContentPage/ContentPage";
 import DraftsPage from "../pages/DraftsPage/DraftsPage";
+import CategoryPage from "../pages/CategoryPage/CategoryPage";
 
 export const router = createBrowserRouter([
     {
@@ -36,7 +37,7 @@ export const router = createBrowserRouter([
                     },
                     {
                         path: "addcategory",
-                        element: <RoleGuard allowed={[ROLE.ADMIN]} isRouterGuard><AddCategory /></RoleGuard>
+                        element: <RoleGuard allowed={[ROLE.ADMIN]} isRouterGuard><CategoryPage /></RoleGuard>
                     },
                     {
                         path: "content",

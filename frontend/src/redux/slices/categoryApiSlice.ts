@@ -1,5 +1,5 @@
-import type { CategoryData } from "../../pages/AddCategory/AddCategory.types";
-import type { CreateCategoryResponse } from "../types";
+import type { CategoryData } from "../../pages/CategoryPage/components/AddCategory/AddCategory.types";
+import type { CreateCategoryResponse, GetCategoriesResponse } from "../types";
 import { apiSliceJAVA } from "./apiSlice";
 
 const categoryApiSlice = apiSliceJAVA.injectEndpoints({
@@ -9,10 +9,16 @@ const categoryApiSlice = apiSliceJAVA.injectEndpoints({
                 url: `/api/v1/admin/create/category/${data.categoryName}`,
                 method: "POST"
             })
+        }),
+        getCategories: builder.query<GetCategoriesResponse, void>({
+            query: () => ({
+                url: "/api/v1/common/categories"
+            })
         })
     })
 })
 
 export const {
-    useCreateCategoryMutation
+    useCreateCategoryMutation,
+    useGetCategoriesQuery
 } = categoryApiSlice;
