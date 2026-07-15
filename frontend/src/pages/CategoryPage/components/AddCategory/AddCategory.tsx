@@ -1,10 +1,10 @@
 import { useForm } from "react-hook-form"
 import type { CategoryData } from "./AddCategory.types"
-import Form from "../../components/Form/Form";
-import FormInput from "../../components/Form/FormInput/FormInput";
-import Button from "../../components/Button/Button";
-import { useCreateCategoryMutation } from "../../redux/slices/categoryApiSlice";
-import { snack } from "../../components/Snackbar/hooks/useSnackbarStore";
+import Form from "../../../../components/Form/Form";
+import FormInput from "../../../../components/Form/FormInput/FormInput";
+import Button from "../../../../components/Button/Button";
+import { useCreateCategoryMutation } from "../../../../redux/slices/categoryApiSlice";
+import { snack } from "../../../../components/Snackbar/hooks/useSnackbarStore";
 
 const AddCategory = () => {
 
