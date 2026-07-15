@@ -14,11 +14,13 @@ class ContentService:
     def generate_recommendation(content_id: uuid.UUID, db: Session):
         content = ContentRepository.get_content_by_id(content_id, db)
         
+        llm_content = str(content.body).replace("\n", " ")
+
         dict_generated_recommendation =  Agent.generate_output(
             user_query=f"""(
-                "recommendation_1" = {Agent.generate_output(content.body, "grammar_checker")},
-                "recommendation_2" = {Agent.generate_output(content.body, "clarity_checker")},
-                "recommendation_3" = {Agent.generate_output(content.body, "tone_checker")}
+                "recommendation_1" = {Agent.generate_output(llm_content, "grammar_checker")},
+                "recommendation_2" = {Agent.generate_output(llm_content, "clarity_checker")},
+                "recommendation_3" = {Agent.generate_output(llm_content, "tone_checker")}
             )""",
             role="final_verdict"
         )
