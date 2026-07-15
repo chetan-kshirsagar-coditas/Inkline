@@ -31,7 +31,7 @@ public class SecurityConfig {
                 http.requestMatchers("/api/v1/author/**").hasRole(Roles.AUTHOR.name())
                         .requestMatchers("/api/v1/admin/**").hasRole(Roles.ADMIN.name())
                         .requestMatchers("/api/v1/editor/**").hasAnyRole(Roles.EDITOR.name(), Roles.ADMIN.name())
-                        .requestMatchers("/v1/api/users/**", "/api/v1/common/**").permitAll()
+                        .requestMatchers("/api/v1/users/**", "/api/v1/common/**").permitAll()
                         .requestMatchers(PUBLIC_URLS).permitAll()
         );
         httpSecurity.httpBasic(Customizer.withDefaults());
