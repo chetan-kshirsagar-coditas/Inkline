@@ -11,7 +11,7 @@ const FormFileInput = <T extends FieldValues>({ label, name, accept }: FormFileI
     control={control}
     render={({ field: { onChange }, fieldState: { error } }) => 
         <FormFieldWrapper label={label} error={error?.message} htmlFor={name}>
-            <Input type="file" onChange={(e) => onChange(e.target.files?.[0])} id={name} />
+            <Input type="file" accept={accept} onChange={(e) => onChange(e.target.files?.[0])} id={name} />
         </FormFieldWrapper>
     }
     />
