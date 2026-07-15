@@ -34,7 +34,7 @@ import java.util.UUID;
 public class AuthorController {
     private final AuthorService authorService;
 
-    @PostMapping(value = "/start-content", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/start-content")
     public ResponseEntity<ApiResponse<StartNewContentResponseDTO>> startNewContent(
             @RequestBody @Valid StartNewContentRequestDTO request,
             @RequestParam(required = false, name = "file", defaultValue = "null") MultipartFile file
