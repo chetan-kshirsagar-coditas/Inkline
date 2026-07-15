@@ -25,7 +25,7 @@ public class SecurityConfig {
     };
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtFilter jwtFilter) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtFilter jwtFilter, CustomCorsConfiguration customCorsConfiguration) {
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(http ->
                 http.requestMatchers("/api/v1/author/**").hasRole(Roles.AUTHOR.name())
@@ -34,6 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/**", "/api/v1/common/**").permitAll()
                         .requestMatchers(PUBLIC_URLS).permitAll()
         );
+        // httpSecurity.cors(cors -> cors.configurationSource(customCorsConfiguration));
         httpSecurity.httpBasic(Customizer.withDefaults());
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();
