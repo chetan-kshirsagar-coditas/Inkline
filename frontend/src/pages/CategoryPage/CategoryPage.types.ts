@@ -1,0 +1,1 @@
+export type CategoryPageModalState = { type: "ADD_CATEGORY" } | null

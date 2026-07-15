@@ -9,7 +9,7 @@ export const contentApiSlice = apiSliceJAVA.injectEndpoints({
                 url: "/api/v1/author/my-content"
             })
         }),
-        addContent: builder.mutation<void, AddContentData>({
+        addContent: builder.mutation<void, any>({
             query: (data) => ({
                 url: "/api/v1/author/start-content",
                 method: "POST",

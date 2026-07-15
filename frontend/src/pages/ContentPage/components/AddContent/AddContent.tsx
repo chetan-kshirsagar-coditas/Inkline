@@ -23,8 +23,13 @@ const AddContent = ({ onClose }: AddContentProps) => {
      }, resolver: zodResolver(ZAddContent) });
 
      const onSubmit = async (data: AddContentData) => {
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("body", data.body);
+        if(data.category) formData.append("category", data.category);
+        if(data.file) formData.append("file", data.file);
         try{
-            await addContent(data).unwrap();
+            await addContent(formData).unwrap();
             snack.success("Added successfully");
         }catch(e: any){
             snack.error("Something went wrong !");
@@ -49,8 +54,8 @@ const AddContent = ({ onClose }: AddContentProps) => {
                     name="category"
                     options={[
                         {
-                            label: "Technology",
-                            value: "Technology"
+                            label: "Food",
+                            value: "Food"
                         }
                     ]}
                     defaultOption="Select a category"
