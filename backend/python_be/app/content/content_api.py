@@ -9,5 +9,5 @@ router = APIRouter(prefix="/content", tags=["content"])
 
 
 @router.post("/recommendation")
-def get_recommendations(article_content: ContentRecommendation, db: Session = Depends(database.get_db)):
+def create_recommendations(article_content: ContentRecommendation, db: Session = Depends(database.get_db)):
     return ContentService.generate_recommendation(article_content, db)

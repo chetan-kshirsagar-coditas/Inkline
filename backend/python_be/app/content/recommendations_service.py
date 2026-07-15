@@ -3,6 +3,8 @@ import uuid
 from app.content.content_repository import ContentRepository
 from fastapi import HTTPException, status
 from app.models.ai_recommendation import AiRecommendation
+from app.content.recommendation_repository import RecommendationRepository
+
 
 class RecommendationService:
     
@@ -19,4 +21,5 @@ class RecommendationService:
             suggestions=recommendation,
             score=score
         )
-        #TODO RECOMMENDATION REPO.CREATE NEW RECOCMENDATION
+
+        return RecommendationRepository.create_new_recommendation(new_recommendation, db)
