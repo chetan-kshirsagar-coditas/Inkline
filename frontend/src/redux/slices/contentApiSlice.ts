@@ -1,5 +1,5 @@
 import type { AddContentData } from "../../pages/ContentPage/components/AddContent/AddContent.types";
-import type { GetContentResponse, GetDraftsResponse } from "../types";
+import type { AddContentResponse, GetContentResponse, GetDraftsResponse } from "../types";
 import { apiSliceJAVA } from "./apiSlice";
 
 export const contentApiSlice = apiSliceJAVA.injectEndpoints({
@@ -9,7 +9,7 @@ export const contentApiSlice = apiSliceJAVA.injectEndpoints({
                 url: "/api/v1/author/my-content"
             })
         }),
-        addContent: builder.mutation<void, any>({
+        addContent: builder.mutation<AddContentResponse, any>({
             query: (data) => ({
                 url: "/api/v1/author/start-content",
                 method: "POST",

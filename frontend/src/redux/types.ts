@@ -41,3 +41,5 @@ export type GetDraftsResponse = {
 export type GetCategoriesResponse = {
     data: string[]
 } & JavaBEResponseType
+
+export type AddContentResponse = JavaBEResponseType;
