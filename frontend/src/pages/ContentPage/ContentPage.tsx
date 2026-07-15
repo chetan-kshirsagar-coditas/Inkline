@@ -13,7 +13,7 @@ const ContentPage = () => {
 
     const closeModal = () => setModal(null);
 
-    const { data: content, isLoading, isFetching } = useGetContentQuery();
+    const { data: contents, isLoading, isFetching } = useGetContentQuery();
     if (isLoading || isFetching) return <Loader />
     return (
         <div>
@@ -21,8 +21,22 @@ const ContentPage = () => {
             <RoleGuard allowed={[ROLE.AUTHOR]}>
                 <Button onClick={() => setModal({ type: "ADD_CONTENT" })}>+ Add Content</Button>
             </RoleGuard>
-            ContentPage
-            {JSON.stringify(content ?? "No data.")}
+            { !contents && <span>No data available.</span> }
+            
+            <div>
+                {
+                    contents?.data.map(content => {
+                        return <div>
+                            <h3>{content.title}</h3>
+                            <p>{content.body}</p>
+                            <p>{content.category}</p>
+                            <p>{content.contentStatus}</p>
+                            <p>{content.createdAt}</p>
+                        </div>
+                    })
+                }
+            </div>
+           
 
         </div>
     )
