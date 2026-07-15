@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field 
+import uuid
 
 class ContentRecommendation(BaseModel):
-    content: str = Field(...)
+    content_id: uuid.UUID = Field(...)
 
 class AgentResponse(BaseModel):
     recommendation: str = Field(..., description="contains one line definition of the negatives about the content")
