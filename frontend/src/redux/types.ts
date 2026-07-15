@@ -27,6 +27,13 @@ export type Draft = {
     "isSubmitted": boolean
 }
 
+export type JavaBEResponseType = {
+    message: string,
+    success: boolean
+}
+
+export type CreateCategoryResponse = JavaBEResponseType;
+
 export type GetDraftsResponse = {
     data: Draft[]
-}
+} & JavaBEResponseType

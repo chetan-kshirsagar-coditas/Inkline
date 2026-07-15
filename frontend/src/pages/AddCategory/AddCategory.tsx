@@ -13,10 +13,10 @@ const AddCategory = () => {
     const methods = useForm<CategoryData>({ defaultValues: { categoryName: "" } });
     const onSubmit = async (data: CategoryData) => {
         try {
-            await createCategory(data).unwrap();
-            snack.success("Create successfully");
+            const response = await createCategory(data).unwrap();
+            snack.success(response.message || "Created successfully");
         } catch (e: any) {
-            snack.error(e.data.detail || "Something went wrong");
+            snack.error(e.data.message || "Something went wrong");
         }
     }
     return (
