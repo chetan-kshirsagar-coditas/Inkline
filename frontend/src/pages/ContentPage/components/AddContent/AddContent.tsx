@@ -10,34 +10,40 @@ import Button from "../../../../components/Button/Button";
 import FormFileInput from "../../../../components/Form/FormFileInput/FormFileInput";
 import { useAddContentMutation } from "../../../../redux/slices/contentApiSlice";
 import { snack } from "../../../../components/Snackbar/hooks/useSnackbarStore";
+import { useGetCategoriesQuery } from "../../../../redux/slices/categoryApiSlice";
+import type { Option } from "../../../../components/Select/Select.types";
 
 const AddContent = ({ onClose }: AddContentProps) => {
 
-    const [ addContent, { isLoading } ] = useAddContentMutation();
+    const [addContent, { isLoading }] = useAddContentMutation();
 
-    const methods = useForm<AddContentData>({ defaultValues: { 
-        title: "",
-        body: "",
-        category: "",
-        file: undefined
-     }, resolver: zodResolver(ZAddContent) });
+    const { data: categories, isLoading: loadingCategories, isFetching: fetchingCategories } = useGetCategoriesQuery();
 
-     const onSubmit = async (data: AddContentData) => {
+    const methods = useForm<AddContentData>({
+        defaultValues: {
+            title: "",
+            body: "",
+            category: "",
+            file: undefined
+        }, resolver: zodResolver(ZAddContent)
+    });
+
+    const onSubmit = async (data: AddContentData) => {
 
         const formData = new FormData();
 
         formData.append("title", data.title);
         formData.append("body", data.body);
-        if(data.category) formData.append("category", data.category);
-        if(data.file) formData.append("file", data.file);
+        if (data.category) formData.append("category", data.category);
+        if (data.file) formData.append("file", data.file);
 
-        try{
+        try {
             const response = await addContent(formData).unwrap();
             snack.success(response.message || "Added successfully");
-        }catch(e: any){
+        } catch (e: any) {
             snack.error(e?.data?.message || "Something went wrong !");
         }
-     }
+    }
     return (
         <Modal closeModal={onClose}>
             <Form methods={methods} onSubmit={onSubmit}>
@@ -55,13 +61,12 @@ const AddContent = ({ onClose }: AddContentProps) => {
                 <FormSelect<AddContentData>
                     label="Category"
                     name="category"
-                    options={[
-                        {
-                            label: "Food",
-                            value: "Food"
-                        }
-                    ]}
-                    defaultOption="Select a category"
+                    defaultOption={loadingCategories || fetchingCategories ? "Loading categories..." : "Select a category"}
+                    options={
+                        categories?.data.map(category => {
+                            return { label: category, value: category } as Option
+                        }) || []
+                    }
                 />
 
                 <FormFileInput<AddContentData>
