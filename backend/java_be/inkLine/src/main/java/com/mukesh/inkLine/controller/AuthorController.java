@@ -12,9 +12,10 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,15 +35,15 @@ import java.util.UUID;
 public class AuthorController {
     private final AuthorService authorService;
 
+    @CrossOrigin
     @PostMapping(value = "/start-content")
     public ResponseEntity<ApiResponse<StartNewContentResponseDTO>> startNewContent(
-            @RequestBody @Valid StartNewContentRequestDTO request,
-            @RequestParam(required = false, name = "file", defaultValue = "null") MultipartFile file
+            @ModelAttribute @Valid StartNewContentRequestDTO request
     ) {
         return ApiResponse.success(
                 HttpStatus.OK,
                 "Started a new content by the author",
-                authorService.startNewContent(request, file)
+                authorService.startNewContent(request)
         );
     }
 

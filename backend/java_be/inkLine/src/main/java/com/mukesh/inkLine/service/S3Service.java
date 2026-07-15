@@ -29,6 +29,7 @@ public class S3Service {
 
     public String uploadFile(MultipartFile file, String key) {
         try {
+            log.info("Uploading the file.");
             s3Client.putObject(
                     PutObjectRequest.builder()
                             .bucket(bucketName)
@@ -36,6 +37,7 @@ public class S3Service {
                             .build(),
                     RequestBody.fromBytes(file.getBytes())
             );
+            log.info("Uploaded the file");
         } catch (IOException e) {
             throw new S3Exception("There was an error while uploading the document to the S3 bucket.");
         }

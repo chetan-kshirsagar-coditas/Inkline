@@ -42,7 +42,7 @@ public class AuthorService {
     private final AttachmentService attachmentService;
     private final DocumentsService documentsService;
 
-    public StartNewContentResponseDTO startNewContent(StartNewContentRequestDTO request, MultipartFile file) {
+    public StartNewContentResponseDTO startNewContent(StartNewContentRequestDTO request) {
         Users currentUser = commonService.getCurrentUser();
 
         if(contentService.isContentPresent(currentUser, request.title())) throw new InvalidRequestException("A content with the requested title is already present. Please re-verify.");
@@ -56,6 +56,7 @@ public class AuthorService {
 
         if(request.category() != null) {
             Categories requestedCategory = categoriesService.getCategoryByCategoryName(request.category());
+            if(requestedCategory == null) throw new InvalidRequestException("The specified category is not valid.");
             newContent.setCategory(requestedCategory);
             log.info("Added the category after verifying the selected category.");
         }
@@ -63,9 +64,9 @@ public class AuthorService {
         contentService.saveContent(newContent);
         log.info("A new content is created by the author: {} {}", currentUser.getFirstName(), currentUser.getLastName());
 
-        String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+        String fileName = UUID.randomUUID() + "_" + request.file().getOriginalFilename();
         String key = "content/" + newContent.getId() + "/attachments/" + fileName;
-        log.info(s3Service.uploadFile(file, key));
+        log.info(s3Service.uploadFile(request.file(), key));
 
         Attachments newAttachment = Attachments.builder()
                 .attachmentPath(key)

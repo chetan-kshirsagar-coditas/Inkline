@@ -34,7 +34,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/users/**", "/api/v1/common/**").permitAll()
                         .requestMatchers(PUBLIC_URLS).permitAll()
         );
-        // httpSecurity.cors(cors -> cors.configurationSource(customCorsConfiguration));
+        httpSecurity.cors(cors -> cors.configurationSource(customCorsConfiguration));
         httpSecurity.httpBasic(Customizer.withDefaults());
         httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();

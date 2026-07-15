@@ -31,7 +31,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "content")
+@Table(name = "contents")
 public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
