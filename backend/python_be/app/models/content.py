@@ -22,4 +22,5 @@ class Content(Base):
     created_at = Column(DateTime, default=func.now())
     submitted_at = Column(DateTime, default=None)
     published_at = Column(DateTime, default=None)
-    content_status = Column(Enum(ContentStatus), default="DRAFT")
+    content_status = Column(String, default="DRAFT")
+    
