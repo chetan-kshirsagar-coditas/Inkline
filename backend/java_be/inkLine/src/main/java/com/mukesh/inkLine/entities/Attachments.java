@@ -15,6 +15,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -33,8 +34,11 @@ public class Attachments {
     @JoinColumn(name = "content", referencedColumnName = "id", nullable = false)
     private Content content;
 
-    @Column(name = "attachment_path", nullable = false)
+    @Column(name = "attachment_url", nullable = false)
     private String attachmentPath;
+
+    @Column(name = "uploaded_at", nullable = false)
+    private LocalDateTime uploadedAt;
 
     @Column(name = "is_public", nullable = false)
     private boolean isPublic;

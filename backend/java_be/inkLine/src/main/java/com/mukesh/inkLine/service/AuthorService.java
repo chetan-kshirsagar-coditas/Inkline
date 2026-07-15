@@ -33,6 +33,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class AuthorService {
     private final CommonService commonService;
     private final ContentService contentService;
@@ -42,6 +43,7 @@ public class AuthorService {
     private final AttachmentService attachmentService;
     private final DocumentsService documentsService;
 
+    @Transactional
     public StartNewContentResponseDTO startNewContent(StartNewContentRequestDTO request) {
         Users currentUser = commonService.getCurrentUser();
 
@@ -52,6 +54,7 @@ public class AuthorService {
                 .title(request.title())
                 .body(request.body())
                 .contentStatus(ContentStatus.DRAFT)
+                .submittedAt(null)
                 .build();
 
         if(request.category() != null) {
@@ -71,10 +74,18 @@ public class AuthorService {
         Attachments newAttachment = Attachments.builder()
                 .attachmentPath(key)
                 .content(newContent)
+                .uploadedAt(LocalDateTime.now())
                 .isPublic(true)
                 .build();
         attachmentService.saveAttachment(newAttachment);
         log.info("A new entry for the attachment is created successfully.");
+
+        Documents newDocument = Documents.builder()
+                .documentType(DocumentType.ATTACHMENT)
+                .documentUrl(key)
+                .build();
+        documentsService.saveDocument(newDocument);
+        log.info("Created a new Entry of Document entry.");
 
         Drafts draft = draftService.getDraft(newContent);
         return StartNewContentResponseDTO.builder()

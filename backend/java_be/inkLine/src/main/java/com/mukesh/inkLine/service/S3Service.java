@@ -1,6 +1,5 @@
 package com.mukesh.inkLine.service;
 
-import com.mukesh.inkLine.entities.Attachments;
 import com.mukesh.inkLine.exceptions.S3Exception;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +33,7 @@ public class S3Service {
                     PutObjectRequest.builder()
                             .bucket(bucketName)
                             .key(key)
+                            .contentType(file.getContentType())
                             .build(),
                     RequestBody.fromBytes(file.getBytes())
             );

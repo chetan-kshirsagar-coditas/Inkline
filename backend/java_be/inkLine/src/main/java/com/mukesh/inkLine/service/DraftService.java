@@ -24,6 +24,7 @@ public class DraftService {
 
         Drafts newDraft = Drafts.builder()
                 .content(content)
+                .isSubmitted(false)
                 .build();
         draftsRepository.save(newDraft);
         log.info("A new draft is created, for the content: {}", content.getTitle());
