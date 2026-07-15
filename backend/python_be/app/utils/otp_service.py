@@ -7,7 +7,7 @@ from app.user.user_repository import UserRepository
 from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 from app.utils.jwt_helper import JWTHelper
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from app.core.config import settings
 
 
@@ -84,8 +84,8 @@ class OTPService:
 
         user_details = {
             "email": user.email,
-            "iat": datetime.now(),
-            "exp": datetime.now() + timedelta(minutes=settings.EXPIRATION_DURATION),
+            "iat": (iat := datetime.now()), 
+            "exp": iat + timedelta(settings.EXPIRATION_DURATION),
             "role": user.role
         }
 

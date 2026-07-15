@@ -9,4 +9,4 @@ class JWTHelper:
     
     @staticmethod
     def decode_token(token: str):
-        return jwt.decode(token, key=settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        return jwt.decode(token, key=settings.SECRET_KEY, algorithms=[settings.ALGORITHM], options={'verify_iat': False})
