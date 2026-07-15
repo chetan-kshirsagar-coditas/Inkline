@@ -14,31 +14,15 @@ import java.util.Date;
 @Component
 public class JwtUtil {
     private final String jwtSecret;
-    private final Long expiration;
     private final UsersRepository usersRepository;
 
     JwtUtil(
             @Value("${custom.jwt.secret}")
             String jwtSecret,
-            @Value("${custom.jwt.expiration}")
-            Long expiration,
             UsersRepository usersRepository
     ) {
         this.jwtSecret = jwtSecret;
-        this.expiration = expiration;
         this.usersRepository = usersRepository;
-    }
-
-    public String generateAccessToken(String username, String role) {
-        return Jwts.builder()
-                .claims()
-                .subject(username)
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + (expiration)))
-                .and()
-                .claim("role", role)
-                .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
-                .compact();
     }
 
     public Claims extractClaims(String token) {
@@ -50,7 +34,7 @@ public class JwtUtil {
     }
 
     public String extractEmail(String token) {
-        return extractClaims(token).getSubject();
+        return String.valueOf(extractClaims(token).get("email"));
     }
 
     public boolean isTokenValid(String token) {
