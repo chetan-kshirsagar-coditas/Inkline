@@ -17,7 +17,8 @@ class RecommendationService:
                 detail= f"Content not found"
             )
         new_recommendation = AiRecommendation(
-            content = existing_content.body,
+            
+            content = existing_content.id,
             suggestions=recommendation,
             score=score
         )
